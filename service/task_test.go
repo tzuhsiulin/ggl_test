@@ -24,8 +24,8 @@ func TestTaskService_GetAll(t *testing.T) {
 
 		mockTaskRepo := mock_repo.NewMockITaskRepo(ctrl)
 		mockTaskRepo.EXPECT().GetList(gomock.Eq(appCtx)).Return(&[]entity.Task{
-			{1, "test", true},
-			{2, "test2", false},
+			{1, "test", 1},
+			{2, "test2", 0},
 		}, nil)
 
 		taskSvc := NewTaskService(mockTaskRepo)
@@ -68,7 +68,7 @@ func TestTaskService_Add(t *testing.T) {
 		mockTaskRepo.EXPECT().GetById(gomock.Eq(appCtx), gomock.Eq(taskId)).Return(&entity.Task{
 			Id:     1,
 			Name:   "test",
-			Status: true,
+			Status: 1,
 		}, nil)
 
 		taskSvc := NewTaskService(mockTaskRepo)
@@ -77,7 +77,7 @@ func TestTaskService_Add(t *testing.T) {
 		assert.NotNil(t, taskInfo)
 		assert.Equal(t, taskInfo.Id, int64(1))
 		assert.Equal(t, taskInfo.Name, "test")
-		assert.Equal(t, taskInfo.Status, true)
+		assert.Equal(t, taskInfo.Status, 1)
 	})
 
 	t.Run("shouldHandleAddErrorCorrectly", func(t *testing.T) {

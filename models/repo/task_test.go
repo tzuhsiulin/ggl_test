@@ -73,3 +73,38 @@ func TestTaskRepo_Add(t *testing.T) {
 		assert.Equal(t, id, int64(0))
 	})
 }
+
+func TestTaskRepo_GetById(t *testing.T) {
+	t.Run("shouldGetTaskCorrectly", func(t *testing.T) {
+		sqlDb, mock, _ := sqlmock.New()
+		mock.ExpectQuery("SELECT id, name, status FROM tasks WHERE id = ?").WithArgs(1).
+			WillReturnRows(
+				sqlmock.NewRows([]string{"id", "name", "status"}).AddRow(1, "test", 0))
+		defer sqlDb.Close()
+
+		c := &dto.AppContext{
+			GinContext: &gin.Context{},
+		}
+		taskRepo := NewTaskRepo(sqlDb)
+		taskInfo, err := taskRepo.GetById(c, 1)
+		assert.Nil(t, err)
+		assert.NotNil(t, taskInfo)
+		assert.Equal(t, taskInfo.Name, "test")
+		assert.Equal(t, taskInfo.Status, 0)
+	})
+
+	t.Run("shouldHandleErrorCorrectly", func(t *testing.T) {
+		sqlDb, mock, _ := sqlmock.New()
+		mock.ExpectQuery("SELECT id, name, status FROM tasks WHERE id = ?").WithArgs(1).
+			WillReturnError(errors.New("test"))
+		defer sqlDb.Close()
+
+		c := &dto.AppContext{
+			GinContext: &gin.Context{},
+		}
+		taskRepo := NewTaskRepo(sqlDb)
+		taskInfo, err := taskRepo.GetById(c, 1)
+		assert.NotNil(t, err)
+		assert.Nil(t, taskInfo)
+	})
+}
