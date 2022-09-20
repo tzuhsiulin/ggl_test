@@ -1,12 +1,13 @@
 package utils
 
 import (
+	"os"
 	"testing"
 
-	"gotest.tools/assert"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestIsProd(t *testing.T) {
+func TestIsProdEnv(t *testing.T) {
 	var tests = []struct {
 		input       string
 		expectedVal bool
@@ -15,6 +16,7 @@ func TestIsProd(t *testing.T) {
 		{"dev", false},
 	}
 	for _, tt := range tests {
-		assert.Equal(t, IsProd(tt.input), tt.expectedVal)
+		os.Setenv("ENV", tt.input)
+		assert.Equal(t, IsProdEnv(), tt.expectedVal)
 	}
 }

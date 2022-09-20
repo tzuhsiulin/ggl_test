@@ -16,7 +16,7 @@ import (
 
 func main() {
 	var dbHost, dbUser, dbPwd string
-	if utils.IsProd(os.Getenv("ENV")) {
+	if utils.IsProdEnv() {
 		dbHost = os.Getenv("DB_HOST")
 		dbUser = os.Getenv("DB_USER")
 		dbPwd = os.Getenv("DB_PWD")

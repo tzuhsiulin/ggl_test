@@ -1,5 +1,7 @@
 package utils
 
-func IsProd(env string) bool {
-	return env == "prod"
+import "os"
+
+func IsProdEnv() bool {
+	return os.Getenv("ENV") == "prod"
 }
