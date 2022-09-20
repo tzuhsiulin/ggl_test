@@ -1,7 +1,9 @@
 package log
 
 import (
+	"ggl_test/models/dto"
 	"ggl_test/utils"
+	"github.com/gin-contrib/requestid"
 	"go.uber.org/zap"
 )
 
@@ -12,6 +14,17 @@ func GetLogger() *zap.SugaredLogger {
 		logger = initLogger()
 	}
 	return logger
+}
+
+func GetLoggerWithCtx(c *dto.AppContext) (l *zap.SugaredLogger) {
+	l = GetLogger()
+	defer func() {
+		if r := recover(); r != nil {
+			//	do nothing
+		}
+	}()
+	reqId := requestid.Get(c.GinContext)
+	return logger.With("requestId", reqId)
 }
 
 func initLogger() *zap.SugaredLogger {
