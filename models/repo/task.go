@@ -3,6 +3,7 @@ package repo
 import (
 	"ggl_test/models/dto"
 	"ggl_test/models/entity"
+	"ggl_test/utils"
 	"ggl_test/utils/log"
 	"github.com/Masterminds/squirrel"
 )
@@ -12,6 +13,7 @@ type ITaskRepo interface {
 	GetList(c *dto.AppContext) (*[]entity.Task, error)
 	Add(c *dto.AppContext, data *entity.Task) (int64, error)
 	GetById(c *dto.AppContext, id int64) (*entity.Task, error)
+	UpdateById(c *dto.AppContext, id int64, data *entity.Task) error
 }
 
 type TaskRepo struct {
@@ -71,8 +73,25 @@ func (s *TaskRepo) GetById(c *dto.AppContext, id int64) (*entity.Task, error) {
 		RunWith(s.db).
 		Scan(&task.Id, &task.Name, &task.Status)
 	if err != nil {
+		if utils.IsDataNotFoundErr(err) {
+			log.GetLoggerWithCtx(c).Infof("task not found: %d", id)
+			return nil, nil
+		}
 		log.GetLoggerWithCtx(c).Error(err)
 		return nil, err
 	}
 	return &task, nil
+}
+
+func (s *TaskRepo) UpdateById(c *dto.AppContext, id int64, data *entity.Task) error {
+	_, err := squirrel.Update("tasks").
+		Set("name", data.Name).
+		Set("status", data.Status).
+		Where(squirrel.Eq{"id": id}).
+		RunWith(s.db).Exec()
+	if err != nil {
+		log.GetLoggerWithCtx(c).Error(err)
+		return err
+	}
+	return nil
 }

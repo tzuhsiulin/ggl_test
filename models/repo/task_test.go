@@ -93,6 +93,22 @@ func TestTaskRepo_GetById(t *testing.T) {
 		assert.Equal(t, taskInfo.Status, 0)
 	})
 
+	t.Run("shouldHandleDataNotFoundErrorCorrectly", func(t *testing.T) {
+		sqlDb, mock, _ := sqlmock.New()
+		mock.ExpectQuery("SELECT id, name, status FROM tasks WHERE id = ?").WithArgs(1).
+			WillReturnRows(
+				sqlmock.NewRows([]string{"id", "name", "status"}))
+		defer sqlDb.Close()
+
+		c := &dto.AppContext{
+			GinContext: &gin.Context{},
+		}
+		taskRepo := NewTaskRepo(sqlDb)
+		taskInfo, err := taskRepo.GetById(c, 1)
+		assert.Nil(t, err)
+		assert.Nil(t, taskInfo)
+	})
+
 	t.Run("shouldHandleErrorCorrectly", func(t *testing.T) {
 		sqlDb, mock, _ := sqlmock.New()
 		mock.ExpectQuery("SELECT id, name, status FROM tasks WHERE id = ?").WithArgs(1).
@@ -106,5 +122,41 @@ func TestTaskRepo_GetById(t *testing.T) {
 		taskInfo, err := taskRepo.GetById(c, 1)
 		assert.NotNil(t, err)
 		assert.Nil(t, taskInfo)
+	})
+}
+
+func TestTaskRepo_UpdateById(t *testing.T) {
+	t.Run("shouldUpdateCorrectly", func(t *testing.T) {
+		sqlDb, mock, _ := sqlmock.New()
+		mock.ExpectExec("UPDATE tasks").WithArgs("test", 0, 1).
+			WillReturnResult(sqlmock.NewResult(1, 1))
+		defer sqlDb.Close()
+
+		c := &dto.AppContext{
+			GinContext: &gin.Context{},
+		}
+		taskRepo := NewTaskRepo(sqlDb)
+		err := taskRepo.UpdateById(c, 1, &entity.Task{
+			Name:   "test",
+			Status: 0,
+		})
+		assert.Nil(t, err)
+	})
+
+	t.Run("shouldHandleErrorCorrectly", func(t *testing.T) {
+		sqlDb, mock, _ := sqlmock.New()
+		mock.ExpectExec("UPDATE tasks").WithArgs("test", 0, 1).
+			WillReturnError(errors.New("test"))
+		defer sqlDb.Close()
+
+		c := &dto.AppContext{
+			GinContext: &gin.Context{},
+		}
+		taskRepo := NewTaskRepo(sqlDb)
+		err := taskRepo.UpdateById(c, 1, &entity.Task{
+			Name:   "test",
+			Status: 0,
+		})
+		assert.NotNil(t, err)
 	})
 }

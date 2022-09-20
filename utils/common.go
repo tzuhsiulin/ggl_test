@@ -18,10 +18,19 @@ func ConvertBindingErr(err error) string {
 			verr := errs[0]
 			fieldName := verr.Field()
 			tagName := verr.ActualTag()
+			kind := verr.Kind().String()
 			if tagName == "required" {
 				return fmt.Sprintf("`%s` cannot be empty", strings.ToLower(fieldName))
 			} else if tagName == "max" {
-				return fmt.Sprintf("`%s` length cannot greater than %s", strings.ToLower(fieldName), verr.Param())
+				if kind == "int" {
+					return fmt.Sprintf("`%s` cannot be greater than %s", strings.ToLower(fieldName), verr.Param())
+				}
+				return fmt.Sprintf("`%s` length cannot be greater than %s", strings.ToLower(fieldName), verr.Param())
+			} else if tagName == "min" {
+				if kind == "int" {
+					return fmt.Sprintf("`%s` cannot be less than %s", strings.ToLower(fieldName), verr.Param())
+				}
+				return fmt.Sprintf("`%s` length cannot be less than %s", strings.ToLower(fieldName), verr.Param())
 			}
 		}
 	}

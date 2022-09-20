@@ -12,6 +12,7 @@ import (
 type ITaskService interface {
 	GetAll(c *dto.AppContext) (*[]entity.Task, *customerror.CustomError)
 	Add(c *dto.AppContext, task *entity.Task) (*entity.Task, *customerror.CustomError)
+	Update(c *dto.AppContext, id int64, task *entity.Task) (*entity.Task, *customerror.CustomError)
 }
 
 type TaskService struct {
@@ -39,6 +40,31 @@ func (s *TaskService) Add(c *dto.AppContext, task *entity.Task) (*entity.Task, *
 	}
 
 	taskInfo, err := s.taskRepo.GetById(c, id)
+	if err != nil {
+		log.GetLoggerWithCtx(c).Error("failed to get task info")
+		return nil, customerror.NewErr(customerror.ErrorCodeUnknown)
+	}
+
+	return taskInfo, nil
+}
+
+func (s *TaskService) Update(c *dto.AppContext, id int64, task *entity.Task) (*entity.Task, *customerror.CustomError) {
+	taskInfo, err := s.taskRepo.GetById(c, id)
+	if err != nil {
+		log.GetLoggerWithCtx(c).Error("failed to get task info")
+		return nil, customerror.NewErr(customerror.ErrorCodeUnknown)
+	} else if taskInfo == nil {
+		log.GetLoggerWithCtx(c).Infof("task not found: %d", id)
+		return nil, customerror.NewErr(customerror.ErrorCodeInvalidParam, "task not found")
+	}
+
+	err = s.taskRepo.UpdateById(c, id, task)
+	if err != nil {
+		log.GetLoggerWithCtx(c).Error("failed to update task info")
+		return nil, customerror.NewErr(customerror.ErrorCodeUnknown)
+	}
+
+	taskInfo, err = s.taskRepo.GetById(c, id)
 	if err != nil {
 		log.GetLoggerWithCtx(c).Error("failed to get task info")
 		return nil, customerror.NewErr(customerror.ErrorCodeUnknown)

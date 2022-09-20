@@ -63,3 +63,31 @@ func (s *TaskController) Add(c *gin.Context) {
 		Result: *taskInfo,
 	}, http.StatusCreated)
 }
+
+func (s *TaskController) Update(c *gin.Context) {
+	appCtx := &dto.AppContext{
+		GinContext: c,
+	}
+
+	var req dto.UpdateTaskReq
+	if err := c.ShouldBindUri(&req.Path); err != nil {
+		log.GetLoggerWithCtx(appCtx).Info(err)
+		utils.ResponseError(appCtx, customerror.NewErr(customerror.ErrorCodeInvalidParam))
+		return
+	}
+
+	if err := c.ShouldBind(&req.Data); err != nil {
+		log.GetLoggerWithCtx(appCtx).Info(err)
+		utils.ResponseError(appCtx, customerror.NewErr(customerror.ErrorCodeInvalidParam, utils.ConvertBindingErr(err)))
+		return
+	}
+
+	taskInfo, err := s.taskService.Update(appCtx, req.Path.Id, &entity.Task{Name: req.Data.Name, Status: req.Data.Status})
+	if err != nil {
+		log.GetLoggerWithCtx(appCtx).Error("failed to update task info")
+		utils.ResponseError(appCtx, err)
+		return
+	}
+
+	utils.Response(appCtx, &dto.UpdateTaskResp{Result: *taskInfo})
+}

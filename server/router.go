@@ -20,4 +20,5 @@ func AddRoutes(appCfg *config.AppCfg, router *gin.Engine) {
 	taskController := controllers.NewTaskController(appCfg, taskSvc)
 	router.GET("/tasks", taskController.GetTaskList)
 	router.POST("/task", taskController.Add)
+	router.PUT("/task/:id", taskController.Update)
 }

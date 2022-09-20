@@ -79,3 +79,17 @@ func (mr *MockITaskRepoMockRecorder) GetList(c interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetList", reflect.TypeOf((*MockITaskRepo)(nil).GetList), c)
 }
+
+// UpdateById mocks base method.
+func (m *MockITaskRepo) UpdateById(c *dto.AppContext, id int64, data *entity.Task) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateById", c, id, data)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateById indicates an expected call of UpdateById.
+func (mr *MockITaskRepoMockRecorder) UpdateById(c, id, data interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateById", reflect.TypeOf((*MockITaskRepo)(nil).UpdateById), c, id, data)
+}

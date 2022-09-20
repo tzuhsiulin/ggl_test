@@ -65,3 +65,18 @@ func (mr *MockITaskServiceMockRecorder) GetAll(c interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockITaskService)(nil).GetAll), c)
 }
+
+// Update mocks base method.
+func (m *MockITaskService) Update(c *dto.AppContext, id int64, task *entity.Task) (*entity.Task, *customerror.CustomError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", c, id, task)
+	ret0, _ := ret[0].(*entity.Task)
+	ret1, _ := ret[1].(*customerror.CustomError)
+	return ret0, ret1
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockITaskServiceMockRecorder) Update(c, id, task interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockITaskService)(nil).Update), c, id, task)
+}
