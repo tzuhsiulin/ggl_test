@@ -36,6 +36,21 @@ func (m *MockITaskService) EXPECT() *MockITaskServiceMockRecorder {
 	return m.recorder
 }
 
+// Add mocks base method.
+func (m *MockITaskService) Add(c *dto.AppContext, task *entity.Task) (*entity.Task, *customerror.CustomError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Add", c, task)
+	ret0, _ := ret[0].(*entity.Task)
+	ret1, _ := ret[1].(*customerror.CustomError)
+	return ret0, ret1
+}
+
+// Add indicates an expected call of Add.
+func (mr *MockITaskServiceMockRecorder) Add(c, task interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockITaskService)(nil).Add), c, task)
+}
+
 // GetAll mocks base method.
 func (m *MockITaskService) GetAll(c *dto.AppContext) (*[]entity.Task, *customerror.CustomError) {
 	m.ctrl.T.Helper()

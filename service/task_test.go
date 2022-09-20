@@ -53,3 +53,64 @@ func TestTaskService_GetAll(t *testing.T) {
 		assert.Equal(t, err.ErrorCode, customerror.ErrorCodeUnknown)
 	})
 }
+
+func TestTaskService_Add(t *testing.T) {
+	t.Run("shouldAddCorrectly", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		appCtx := &dto.AppContext{GinContext: &gin.Context{}}
+		addTaskPayload := &entity.Task{Name: "test"}
+		taskId := int64(1)
+
+		mockTaskRepo := mock_repo.NewMockITaskRepo(ctrl)
+		mockTaskRepo.EXPECT().Add(gomock.Eq(appCtx), gomock.Eq(addTaskPayload)).Return(taskId, nil)
+		mockTaskRepo.EXPECT().GetById(gomock.Eq(appCtx), gomock.Eq(taskId)).Return(&entity.Task{
+			Id:     1,
+			Name:   "test",
+			Status: true,
+		}, nil)
+
+		taskSvc := NewTaskService(mockTaskRepo)
+		taskInfo, err := taskSvc.Add(appCtx, addTaskPayload)
+		assert.Nil(t, err)
+		assert.NotNil(t, taskInfo)
+		assert.Equal(t, taskInfo.Id, int64(1))
+		assert.Equal(t, taskInfo.Name, "test")
+		assert.Equal(t, taskInfo.Status, true)
+	})
+
+	t.Run("shouldHandleAddErrorCorrectly", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		appCtx := &dto.AppContext{GinContext: &gin.Context{}}
+		addTaskPayload := &entity.Task{Name: "test"}
+
+		mockTaskRepo := mock_repo.NewMockITaskRepo(ctrl)
+		mockTaskRepo.EXPECT().Add(gomock.Eq(appCtx), gomock.Eq(addTaskPayload)).Return(int64(0), errors.New("test"))
+
+		taskSvc := NewTaskService(mockTaskRepo)
+		taskInfo, err := taskSvc.Add(appCtx, addTaskPayload)
+		assert.NotNil(t, err)
+		assert.Nil(t, taskInfo)
+	})
+
+	t.Run("shouldHandleGetInfoErrorCorrectly", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		appCtx := &dto.AppContext{GinContext: &gin.Context{}}
+		addTaskPayload := &entity.Task{Name: "test"}
+		taskId := int64(1)
+
+		mockTaskRepo := mock_repo.NewMockITaskRepo(ctrl)
+		mockTaskRepo.EXPECT().Add(gomock.Eq(appCtx), gomock.Eq(addTaskPayload)).Return(taskId, nil)
+		mockTaskRepo.EXPECT().GetById(gomock.Eq(appCtx), gomock.Eq(taskId)).Return(nil, errors.New("test"))
+
+		taskSvc := NewTaskService(mockTaskRepo)
+		taskInfo, err := taskSvc.Add(appCtx, addTaskPayload)
+		assert.NotNil(t, err)
+		assert.Nil(t, taskInfo)
+	})
+}

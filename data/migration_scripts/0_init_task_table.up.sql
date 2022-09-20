@@ -3,4 +3,4 @@ CREATE TABLE `tasks` (
      `name` varchar(64) NOT NULL DEFAULT '',
      `status` tinyint(4) NOT NULL DEFAULT '0',
      PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

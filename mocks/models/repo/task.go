@@ -35,6 +35,36 @@ func (m *MockITaskRepo) EXPECT() *MockITaskRepoMockRecorder {
 	return m.recorder
 }
 
+// Add mocks base method.
+func (m *MockITaskRepo) Add(c *dto.AppContext, data *entity.Task) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Add", c, data)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Add indicates an expected call of Add.
+func (mr *MockITaskRepoMockRecorder) Add(c, data interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockITaskRepo)(nil).Add), c, data)
+}
+
+// GetById mocks base method.
+func (m *MockITaskRepo) GetById(c *dto.AppContext, id int64) (*entity.Task, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetById", c, id)
+	ret0, _ := ret[0].(*entity.Task)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetById indicates an expected call of GetById.
+func (mr *MockITaskRepoMockRecorder) GetById(c, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockITaskRepo)(nil).GetById), c, id)
+}
+
 // GetList mocks base method.
 func (m *MockITaskRepo) GetList(c *dto.AppContext) (*[]entity.Task, error) {
 	m.ctrl.T.Helper()
