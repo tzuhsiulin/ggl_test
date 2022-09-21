@@ -1,3 +1,4 @@
 .idea
 data/mysql
 cover.out
+bin/
