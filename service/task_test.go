@@ -140,6 +140,24 @@ func TestTaskService_Update(t *testing.T) {
 		assert.Equal(t, taskInfo.Status, 1)
 	})
 
+	t.Run("shouldReturnUnknownError", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		appCtx := &dto.AppContext{GinContext: &gin.Context{}}
+		updateTaskPayload := &entity.Task{Name: "test", Status: 1}
+		taskId := int64(1)
+
+		mockTaskRepo := mock_repo.NewMockITaskRepo(ctrl)
+		mockTaskRepo.EXPECT().GetById(gomock.Eq(appCtx), gomock.Eq(taskId)).
+			Return(nil, errors.New("test"))
+
+		taskSvc := NewTaskService(mockTaskRepo)
+		taskInfo, err := taskSvc.Update(appCtx, taskId, updateTaskPayload)
+		assert.NotNil(t, err)
+		assert.Nil(t, taskInfo)
+	})
+
 	t.Run("shouldHandleDataNotFoundError", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -214,6 +232,22 @@ func TestTaskService_Delete(t *testing.T) {
 		taskService := NewTaskService(mockTaskRepo)
 		err := taskService.Delete(appCtx, taskId)
 		assert.Nil(t, err)
+	})
+
+	t.Run("shouldReturnError", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		appCtx := &dto.AppContext{GinContext: &gin.Context{}}
+		taskId := int64(1)
+
+		mockTaskRepo := mock_repo.NewMockITaskRepo(ctrl)
+		mockTaskRepo.EXPECT().GetById(gomock.Eq(appCtx), gomock.Eq(taskId)).
+			Return(nil, errors.New("test"))
+
+		taskService := NewTaskService(mockTaskRepo)
+		err := taskService.Delete(appCtx, taskId)
+		assert.NotNil(t, err)
 	})
 
 	t.Run("shouldHandleDataNotFoundCorrectly", func(t *testing.T) {
