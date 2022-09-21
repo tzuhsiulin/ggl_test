@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "b2571835-c79c-44d5-a4ca-6f5962dc0f1b",
+		"name": "ggl_test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8447528"
+	},
+	"item": [
+		{
+			"name": "task list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/tasks",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"tasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create task",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"你好嗎你好嗎你好嗎你好嗎你好嗎你好嗎你好嗎你好嗎\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/task",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"task"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update task",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"你好嗎你好嗎你好嗎你好嗎你好嗎你好嗎你好嗎你好嗎\",\n    \"status\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/task/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"task",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete task",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"你好嗎你好嗎你好嗎你好嗎你好嗎你好嗎你好嗎你好嗎\",\n    \"status\": -1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/task/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"task",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://127.0.0.1:8080",
+			"type": "string"
+		}
+	]
+}
