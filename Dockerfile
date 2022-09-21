@@ -9,10 +9,13 @@ RUN cd /backend && make clean && make bin
 FROM alpine:3.14
 LABEL maintainer="Chris Lin"
 
-RUN mkdir -p /ggl_test && mkdir -p /ggl_test/data/
-WORKDIR /ggl_test
-COPY --from=bin /backend/bin/api /ggl_test/
-COPY --from=bin /backend/bin/db_migration /ggl_test/
-COPY --from=bin /backend/data/migration_scripts /ggl_test/data/migration_scripts
+RUN addgroup -S ggltest && adduser -S ggltest -G ggltest
+USER ggltest
 
+RUN mkdir -p /home/ggltest/data/
+COPY --from=bin /backend/bin/api /home/ggltest/api
+COPY --from=bin /backend/bin/db_migration /home/ggltest/db_migration
+COPY --from=bin /backend/data/migration_scripts /home/ggltest/data/migration_scripts
+
+WORKDIR /home/ggltest
 ENTRYPOINT [ "sh", "-c", "./db_migration && ./api" ]
