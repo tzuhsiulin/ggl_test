@@ -28,3 +28,7 @@ type UpdateTaskReq struct {
 type UpdateTaskResp struct {
 	Result entity.Task `json:"result"`
 }
+
+type DeleteTaskReq struct {
+	Id int64 `uri:"id"`
+}

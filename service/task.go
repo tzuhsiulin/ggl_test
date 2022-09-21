@@ -13,6 +13,7 @@ type ITaskService interface {
 	GetAll(c *dto.AppContext) (*[]entity.Task, *customerror.CustomError)
 	Add(c *dto.AppContext, task *entity.Task) (*entity.Task, *customerror.CustomError)
 	Update(c *dto.AppContext, id int64, task *entity.Task) (*entity.Task, *customerror.CustomError)
+	Delete(c *dto.AppContext, id int64) *customerror.CustomError
 }
 
 type TaskService struct {
@@ -71,4 +72,23 @@ func (s *TaskService) Update(c *dto.AppContext, id int64, task *entity.Task) (*e
 	}
 
 	return taskInfo, nil
+}
+
+func (s *TaskService) Delete(c *dto.AppContext, id int64) *customerror.CustomError {
+	taskInfo, err := s.taskRepo.GetById(c, id)
+	if err != nil {
+		log.GetLoggerWithCtx(c).Error("failed to get task info")
+		return customerror.NewErr(customerror.ErrorCodeUnknown)
+	} else if taskInfo == nil {
+		log.GetLoggerWithCtx(c).Infof("task not found: %d", id)
+		return customerror.NewErr(customerror.ErrorCodeInvalidParam, "task not found")
+	}
+
+	err = s.taskRepo.DeleteById(c, id)
+	if err != nil {
+		log.GetLoggerWithCtx(c).Error("failed to delete task")
+		return customerror.NewErr(customerror.ErrorCodeUnknown)
+	}
+
+	return nil
 }

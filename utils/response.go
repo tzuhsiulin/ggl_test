@@ -5,6 +5,7 @@ import (
 
 	"ggl_test/models/dto"
 	"ggl_test/utils/customerror"
+	"github.com/gin-gonic/gin"
 )
 
 var httpStatusCodeMapping = map[int]int{
@@ -21,6 +22,9 @@ func Response(c *dto.AppContext, obj interface{}, args ...int) {
 	statusCode := http.StatusOK
 	if len(args) > 0 {
 		statusCode = http.StatusOK
+	}
+	if obj == nil {
+		obj = gin.H{}
 	}
 	c.GinContext.JSON(statusCode, obj)
 }

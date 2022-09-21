@@ -160,3 +160,33 @@ func TestTaskRepo_UpdateById(t *testing.T) {
 		assert.NotNil(t, err)
 	})
 }
+
+func TestTaskRepo_DeleteById(t *testing.T) {
+	t.Run("shouldDeleteCorrectly", func(t *testing.T) {
+		sqlDb, mock, _ := sqlmock.New()
+		mock.ExpectExec("DELETE FROM tasks WHERE id = ?").WithArgs(1).
+			WillReturnResult(sqlmock.NewResult(1, 1))
+		defer sqlDb.Close()
+
+		c := &dto.AppContext{
+			GinContext: &gin.Context{},
+		}
+		taskRepo := NewTaskRepo(sqlDb)
+		err := taskRepo.DeleteById(c, 1)
+		assert.Nil(t, err)
+	})
+
+	t.Run("shouldHandleErrorCorrectly", func(t *testing.T) {
+		sqlDb, mock, _ := sqlmock.New()
+		mock.ExpectExec("DELETE FROM tasks WHERE id = ?").WithArgs(1).
+			WillReturnError(errors.New("test"))
+		defer sqlDb.Close()
+
+		c := &dto.AppContext{
+			GinContext: &gin.Context{},
+		}
+		taskRepo := NewTaskRepo(sqlDb)
+		err := taskRepo.DeleteById(c, 1)
+		assert.NotNil(t, err)
+	})
+}

@@ -30,7 +30,7 @@ func (s *TaskController) GetTaskList(c *gin.Context) {
 	log.GetLoggerWithCtx(appCtx).Info("getting task list")
 	taskList, err := s.taskService.GetAll(appCtx)
 	if err != nil {
-		log.GetLoggerWithCtx(appCtx).Error("failed to get task list")
+		log.GetLoggerWithCtx(appCtx).Info("failed to get task list")
 		utils.ResponseError(appCtx, err)
 		return
 	}
@@ -53,7 +53,7 @@ func (s *TaskController) Add(c *gin.Context) {
 
 	taskInfo, err := s.taskService.Add(appCtx, &entity.Task{Name: req.Name})
 	if err != nil {
-		log.GetLoggerWithCtx(appCtx).Error("failed to create task")
+		log.GetLoggerWithCtx(appCtx).Info("failed to create task")
 		utils.ResponseError(appCtx, err)
 		return
 	}
@@ -84,10 +84,32 @@ func (s *TaskController) Update(c *gin.Context) {
 
 	taskInfo, err := s.taskService.Update(appCtx, req.Path.Id, &entity.Task{Name: req.Data.Name, Status: req.Data.Status})
 	if err != nil {
-		log.GetLoggerWithCtx(appCtx).Error("failed to update task info")
+		log.GetLoggerWithCtx(appCtx).Info("failed to update task info")
 		utils.ResponseError(appCtx, err)
 		return
 	}
 
 	utils.Response(appCtx, &dto.UpdateTaskResp{Result: *taskInfo})
+}
+
+func (s *TaskController) Delete(c *gin.Context) {
+	appCtx := &dto.AppContext{
+		GinContext: c,
+	}
+
+	var req dto.DeleteTaskReq
+	if err := c.ShouldBindUri(&req); err != nil {
+		log.GetLoggerWithCtx(appCtx).Info(err)
+		utils.ResponseError(appCtx, customerror.NewErr(customerror.ErrorCodeInvalidParam))
+		return
+	}
+
+	err := s.taskService.Delete(appCtx, req.Id)
+	if err != nil {
+		log.GetLoggerWithCtx(appCtx).Info("failed to delete task info")
+		utils.ResponseError(appCtx, err)
+		return
+	}
+
+	utils.Response(appCtx, nil)
 }

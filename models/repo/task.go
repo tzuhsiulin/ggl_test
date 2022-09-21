@@ -14,6 +14,7 @@ type ITaskRepo interface {
 	Add(c *dto.AppContext, data *entity.Task) (int64, error)
 	GetById(c *dto.AppContext, id int64) (*entity.Task, error)
 	UpdateById(c *dto.AppContext, id int64, data *entity.Task) error
+	DeleteById(c *dto.AppContext, id int64) error
 }
 
 type TaskRepo struct {
@@ -89,6 +90,16 @@ func (s *TaskRepo) UpdateById(c *dto.AppContext, id int64, data *entity.Task) er
 		Set("status", data.Status).
 		Where(squirrel.Eq{"id": id}).
 		RunWith(s.db).Exec()
+	if err != nil {
+		log.GetLoggerWithCtx(c).Error(err)
+		return err
+	}
+	return nil
+}
+
+func (s *TaskRepo) DeleteById(c *dto.AppContext, id int64) error {
+	_, err := squirrel.Delete("tasks").
+		Where(squirrel.Eq{"id": id}).RunWith(s.db).Exec()
 	if err != nil {
 		log.GetLoggerWithCtx(c).Error(err)
 		return err

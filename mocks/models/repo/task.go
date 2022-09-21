@@ -50,6 +50,20 @@ func (mr *MockITaskRepoMockRecorder) Add(c, data interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockITaskRepo)(nil).Add), c, data)
 }
 
+// DeleteById mocks base method.
+func (m *MockITaskRepo) DeleteById(c *dto.AppContext, id int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteById", c, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteById indicates an expected call of DeleteById.
+func (mr *MockITaskRepoMockRecorder) DeleteById(c, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteById", reflect.TypeOf((*MockITaskRepo)(nil).DeleteById), c, id)
+}
+
 // GetById mocks base method.
 func (m *MockITaskRepo) GetById(c *dto.AppContext, id int64) (*entity.Task, error) {
 	m.ctrl.T.Helper()

@@ -51,6 +51,20 @@ func (mr *MockITaskServiceMockRecorder) Add(c, task interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockITaskService)(nil).Add), c, task)
 }
 
+// Delete mocks base method.
+func (m *MockITaskService) Delete(c *dto.AppContext, id int64) *customerror.CustomError {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", c, id)
+	ret0, _ := ret[0].(*customerror.CustomError)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockITaskServiceMockRecorder) Delete(c, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockITaskService)(nil).Delete), c, id)
+}
+
 // GetAll mocks base method.
 func (m *MockITaskService) GetAll(c *dto.AppContext) (*[]entity.Task, *customerror.CustomError) {
 	m.ctrl.T.Helper()
