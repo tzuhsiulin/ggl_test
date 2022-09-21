@@ -6,4 +6,5 @@ const (
 
 const (
 	ErrorCodeInvalidParam = iota + 4000
+	ErrorCodeNotFound
 )

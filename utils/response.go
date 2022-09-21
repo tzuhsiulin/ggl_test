@@ -11,11 +11,13 @@ import (
 var httpStatusCodeMapping = map[int]int{
 	customerror.ErrorCodeUnknown:      http.StatusInternalServerError,
 	customerror.ErrorCodeInvalidParam: http.StatusBadRequest,
+	customerror.ErrorCodeNotFound:     http.StatusNotFound,
 }
 
 var customErrMessage = map[int]string{
 	customerror.ErrorCodeUnknown:      "unknown error",
 	customerror.ErrorCodeInvalidParam: "invalid params",
+	customerror.ErrorCodeNotFound:     "not found",
 }
 
 func Response(c *dto.AppContext, obj interface{}, args ...int) {
